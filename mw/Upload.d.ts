@@ -14,7 +14,7 @@ declare global {
          *     button = new OO.ui.ButtonWidget( { label: 'Save' } ),
          *     upload = new mw.Upload;
          *
-         * button.on( 'click', function () {
+         * button.on( 'click', () => {
          *     upload.setFile( file.getValue() );
          *     upload.setFilename( file.getValue().name );
          *     upload.upload();
@@ -32,14 +32,14 @@ declare global {
          *     stashPromise = $.Deferred();
          *
          * upload.setFile( file );
-         * upload.uploadToStash().then( function () {
+         * upload.uploadToStash().then( () => {
          *     stashPromise.resolve();
          * } );
          *
-         * stashPromise.then( function () {
+         * stashPromise.then( () => {
          *     upload.setFilename( 'foo' );
          *     upload.setText( 'bar' );
-         *     upload.finishStashUpload().then( function () {
+         *     upload.finishStashUpload().then( () => {
          *         console.log( 'Done!' );
          *     } );
          * } );

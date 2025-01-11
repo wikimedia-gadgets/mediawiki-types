@@ -105,7 +105,7 @@ declare global {
          * api.get( {
          *     action: 'query',
          *     meta: 'userinfo'
-         * } ).then( function ( data ) {
+         * } ).then( ( data ) => {
          *     console.log( data );
          * } );
          * ```
@@ -117,7 +117,7 @@ declare global {
          * api.get( {
          *     action: 'query',
          *     meta: [ 'userinfo', 'siteinfo' ] // same effect as 'userinfo|siteinfo'
-         * } ).then( function ( data ) {
+         * } ).then( ( data ) => {
          *     console.log( data );
          * } );
          * ```
@@ -410,9 +410,9 @@ declare global {
              * api.postWithToken( 'watch', {
              *     action: 'watch',
              *     title: title
-             * } ).then( function ( data ) {
+             * } ).then( ( data ) => {
              *     mw.notify( 'Success!' );
-             * }, function ( code, data ) {
+             * }, ( code, data ) => {
              *     mw.notify( api.getErrorMessage( data ), { type: 'error' } );
              * } );
              * ```
@@ -605,6 +605,42 @@ declare global {
                 params: UnknownApiParams,
                 ajaxOptions?: JQuery.AjaxSettings
             ): Api.Promise;
+
+            /**
+             * Prepare an extensible API request.
+             *
+             * This is a utility method to allow mw.hook implementations to add data to params sent
+             * with an API request.
+             *
+             * For example usage, see mediawiki.ready/index.js#logoutViaPost:
+             *
+             * ```js
+             * api.prepareExtensibleApiRequest( 'extendLogout' ).then( ( params ) => { ... } )
+             * ```
+             *
+             * Implementations of `hookName` should do something like the following, where `hookName`
+             * is `extendLogout` in this example:
+             *
+             * ```js
+             * mw.hook( 'extendLogout' ).add( ( data ) => {
+             *     data.promise = data.promise.then( () => {
+             *         // Return a promise
+             *         return collectClientHintsData().then( ( userAgentHighEntropyValues ) => {
+             *             // Set the data.params.{yourUniqueKey} that will be included in the API
+             *             // request
+             *             data.params.customData = { clientHints: userAgentHighEntropyValues };
+             *         } );
+             *     } );
+             * } );
+             * ```
+             *
+             * @since 1.44
+             * @param {string} hookName Name of the hook to use with mw.hook().fire()
+             * @return {JQuery.Promise<Object>} Updated parameter data from implementations
+             *   of `hookName` to include with the API request.
+             *@see https://doc.wikimedia.org/mediawiki-core/master/js/mw.Api.html#prepareExtensibleApiRequest
+             */
+            prepareExtensibleApiRequest<T extends {} = {}>(hookName: string): JQuery.Promise<T>;
 
             /**
              * Convenience method for `action=rollback`.
