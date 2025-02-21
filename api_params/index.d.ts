@@ -1,5 +1,7 @@
 // tslint:disable:no-empty-interface
 
+import { UnknownApiParams } from "../mw/Api";
+
 type timestamp = string;
 type expiry = string;
 type namespace = number;
@@ -32,7 +34,7 @@ export type ApiLegacyTokenType =
     | "protect"
     | "unblock";
 
-export interface ApiParams {
+export interface ApiParams extends UnknownApiParams {
     action?: string;
     format?: "json" | "jsonfm" | "xml" | "xmlfm" | "php" | "none";
     maxlag?: number;
