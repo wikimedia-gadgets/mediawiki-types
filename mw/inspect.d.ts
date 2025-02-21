@@ -1,79 +1,3 @@
-import { ResourceLoaderStoreStats } from "./loader";
-
-interface SelectorCounts {
-    /**
-     * Number of matched selectors.
-     */
-    matched: number;
-    /**
-     * Total number of selectors.
-     */
-    total: number;
-}
-
-interface ResourceLoaderCSSReport {
-    allSelectors: number;
-    matchedSelectors: number;
-    module: string;
-    percentMatched: `${number}%` | null;
-}
-
-interface ResourceLoaderSizeReport {
-    name: string;
-    size: string;
-    sizeInBytes: number;
-}
-
-interface ResourceLoaderStoreReport extends ResourceLoaderStoreStats {
-    enabled: boolean;
-    totalSize: string;
-    totalSizeInBytes: number;
-}
-
-interface ResourceLoaderTimeReport {
-    execute: number;
-    name: string;
-    script: number;
-    total: string;
-    totalInMs: number;
-}
-
-type ResourceLoaderReport = keyof ResourceLoaderReportMap;
-
-interface ResourceLoaderReportMap {
-    /**
-     * For each module with styles, count the number of selectors, and
-     * count how many match against some element currently in the DOM.
-     */
-    css: ResourceLoaderCSSReport;
-
-    /**
-     * Generate a breakdown of all loaded modules and their size in
-     * kibibytes. Modules are ordered from largest to smallest.
-     */
-    size: ResourceLoaderSizeReport;
-
-    /**
-     * Report stats on mw.loader.store: the number of localStorage
-     * cache hits and misses, the number of items purged from the
-     * cache, and the total size of the module blob in localStorage.
-     */
-    store: ResourceLoaderStoreReport;
-
-    /**
-     * Generate a breakdown of all loaded modules and their time
-     * spent during initialisation (measured in milliseconds).
-     *
-     * This timing data is collected by mw.loader.profiler.
-     */
-    time: ResourceLoaderTimeReport;
-}
-
-interface Dependency {
-    requiredBy: string[];
-    requires: string[];
-}
-
 declare global {
     namespace mw {
         /**
@@ -84,7 +8,7 @@ declare global {
          * @param {...string} [reports]
          * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.html#.inspect
          */
-        function inspect(...reports: ResourceLoaderReport[]): void;
+        function inspect(...reports: inspect.ResourceLoaderReport[]): void;
 
         /**
          * Tools for inspecting page composition and performance.
@@ -163,6 +87,82 @@ declare global {
              * @see https://doc.wikimedia.org/mediawiki-core/master/js/mediawiki.inspect.html#.runReports
              */
             function runReports(...reports: ResourceLoaderReport[]): void;
+
+            interface SelectorCounts {
+                /**
+                 * Number of matched selectors.
+                 */
+                matched: number;
+                /**
+                 * Total number of selectors.
+                 */
+                total: number;
+            }
+
+            interface ResourceLoaderReportMap {
+                /**
+                 * For each module with styles, count the number of selectors, and
+                 * count how many match against some element currently in the DOM.
+                 */
+                css: ResourceLoaderReport.CSS;
+
+                /**
+                 * Generate a breakdown of all loaded modules and their size in
+                 * kibibytes. Modules are ordered from largest to smallest.
+                 */
+                size: ResourceLoaderReport.Size;
+
+                /**
+                 * Report stats on mw.loader.store: the number of localStorage
+                 * cache hits and misses, the number of items purged from the
+                 * cache, and the total size of the module blob in localStorage.
+                 */
+                store: ResourceLoaderReport.Store;
+
+                /**
+                 * Generate a breakdown of all loaded modules and their time
+                 * spent during initialisation (measured in milliseconds).
+                 *
+                 * This timing data is collected by mw.loader.profiler.
+                 */
+                time: ResourceLoaderReport.Time;
+            }
+
+            type ResourceLoaderReport = keyof ResourceLoaderReportMap;
+
+            namespace ResourceLoaderReport {
+                interface CSS {
+                    allSelectors: number;
+                    matchedSelectors: number;
+                    module: string;
+                    percentMatched: `${number}%` | null;
+                }
+
+                interface Size {
+                    name: string;
+                    size: string;
+                    sizeInBytes: number;
+                }
+
+                interface Store extends loader.store.Stats {
+                    enabled: boolean;
+                    totalSize: string;
+                    totalSizeInBytes: number;
+                }
+
+                interface Time {
+                    execute: number;
+                    name: string;
+                    script: number;
+                    total: string;
+                    totalInMs: number;
+                }
+            }
+
+            interface Dependency {
+                requires: string[];
+                requiredBy: string[];
+            }
         }
     }
 }

@@ -15,12 +15,12 @@ declare global {
          *  current cookie keys and values.
          * @param {string|null} [value] Cookie value to set. If `null`, this method will remove the cookie.
          *  If omited, this method will get and return the current value.
-         * @param {mw.cookie.CookieOptions} [options]
+         * @param {mw.cookie.Options} [options]
          * @returns {string|Object} The current value (if getting a cookie), or an internal `document.cookie`
          *  expression (if setting or removing).
          * @see https://doc.wikimedia.org/mediawiki-core/master/js/module-mediawiki.cookie.html#.$.cookie
          */
-        cookie(key: string, value: string | null, options?: mw.cookie.CookieOptions): string;
+        cookie(key: string, value: string | null, options?: mw.cookie.Options): string;
         cookie(key: string): unknown;
         cookie(): Record<string, unknown>;
 
@@ -36,11 +36,11 @@ declare global {
          * } );
          * ```
          * @param {string} key
-         * @param {mw.cookie.CookieOptions} options
+         * @param {mw.cookie.Options} options
          * @returns {boolean} True if the cookie previously existed
          * @see https://doc.wikimedia.org/mediawiki-core/master/js/module-mediawiki.cookie.html#.$.removeCookie
          */
-        removeCookie(key: string, options: mw.cookie.CookieOptions): boolean;
+        removeCookie(key: string, options: mw.cookie.Options): boolean;
     }
 }
 

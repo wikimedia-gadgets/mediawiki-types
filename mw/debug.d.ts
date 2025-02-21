@@ -1,38 +1,3 @@
-type LogEntryType = "deprecated" | "log" | "warn";
-
-interface Data {
-    debugLog: string[];
-    gitBranch: string | false;
-    gitRevision: string | false;
-    gitViewUrl: string | false;
-    includes: File[];
-    log: LogEntry[];
-    memory: string;
-    memoryPeak: string;
-    mwVersion: string;
-    phpVersion: string;
-    queries: Query[];
-    time: number;
-}
-
-interface File {
-    name: string;
-    size: string;
-}
-
-interface LogEntry {
-    caller: string;
-    msg: string;
-    type: LogEntryType;
-    typeText?: string;
-}
-
-interface Query {
-    function: string;
-    sql: string;
-    time: number;
-}
-
 declare global {
     namespace mw {
         /**
@@ -42,6 +7,8 @@ declare global {
          * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.Debug.html
          */
         namespace Debug {
+            type LogEntryType = "deprecated" | "log" | "warn";
+
             /**
              * Toolbar container element.
              *
@@ -124,6 +91,39 @@ declare global {
              * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.Debug.html#.switchPane
              */
             function switchPane(e: JQuery.Event): void;
+
+            interface Data {
+                debugLog: string[];
+                gitBranch: string | false;
+                gitRevision: string | false;
+                gitViewUrl: string | false;
+                includes: File[];
+                log: LogEntry[];
+                memory: string;
+                memoryPeak: string;
+                mwVersion: string;
+                phpVersion: string;
+                queries: Query[];
+                time: number;
+            }
+
+            interface File {
+                name: string;
+                size: string;
+            }
+
+            interface LogEntry {
+                caller: string;
+                msg: string;
+                type: LogEntryType;
+                typeText?: string;
+            }
+
+            interface Query {
+                function: string;
+                sql: string;
+                time: number;
+            }
         }
     }
 }

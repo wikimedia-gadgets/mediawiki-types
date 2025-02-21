@@ -1,6 +1,6 @@
 declare global {
     interface JQueryStatic {
-        highlightText: HighlightText;
+        highlightText: JQuery.HighlightText;
     }
 
     interface JQuery {
@@ -18,36 +18,40 @@ declare global {
          * } );
          * ```
          * @param {string} matchString String to match
-         * @param {Options} [options]
+         * @param {JQuery.HighlightText.Options} [options]
          * @returns {JQuery}
          * @see https://doc.wikimedia.org/mediawiki-core/master/js/module-jquery.highlightText.html#.$.fn.highlightText
          */
-        highlightText(matchString: string, options?: Options): this;
+        highlightText(matchString: string, options?: JQuery.HighlightText.Options): this;
     }
-}
 
-type Method = "prefixHighlight" | "prefixPlusComboHighlight" | "splitAndHighlight";
+    namespace JQuery {
+        interface HighlightText {
+            innerHighlight(node: Node, pat: string | RegExp): void;
 
-interface HighlightText {
-    innerHighlight(node: Node, pat: string | RegExp): void;
+            prefixHighlight(node: Node, prefix: string): void;
 
-    prefixHighlight(node: Node, prefix: string): void;
+            prefixPlusComboHighlight(node: Node, prefix: string): void;
 
-    prefixPlusComboHighlight(node: Node, prefix: string): void;
+            splitAndHighlight<T extends Node>(node: T, text: string): T;
+        }
 
-    splitAndHighlight<T extends Node>(node: T, text: string): T;
-}
+        namespace HighlightText {
+            type Method = "prefixHighlight" | "prefixPlusComboHighlight" | "splitAndHighlight";
 
-interface Options {
-    /**
-     * Method of matching to use, one of:
-     *
-     * - 'splitAndHighlight': Split `matchString` on spaces, then match each word separately.
-     * - 'prefixHighlight': Match `matchString` at the beginning of text only.
-     * - 'prefixPlusComboHighlight': Match `matchString` plus any combining characters at
-     *   the beginning of text only.
-     */
-    method?: Method;
+            interface Options {
+                /**
+                 * Method of matching to use, one of:
+                 *
+                 * - 'splitAndHighlight': Split `matchString` on spaces, then match each word separately.
+                 * - 'prefixHighlight': Match `matchString` at the beginning of text only.
+                 * - 'prefixPlusComboHighlight': Match `matchString` plus any combining characters at
+                 *   the beginning of text only.
+                 */
+                method?: Method;
+            }
+        }
+    }
 }
 
 export {};

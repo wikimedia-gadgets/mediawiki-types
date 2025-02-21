@@ -1,36 +1,3 @@
-interface Options {
-    /**
-     * Optional jQuery event namespace, to allow loosely coupled
-     * external code to release your trigger. For example, the VisualEditor extension can use this
-     * remove the trigger registered by mediawiki.action.edit, without strong runtime coupling.
-     */
-    namespace?: string;
-
-    /**
-     * @returns {boolean} Whether to show the dialog to the user.
-     */
-    test?(): boolean;
-}
-
-interface ConfirmCloseWindow {
-    /**
-     * Remove the event listener and don't show an alert anymore, if the user wants to leave
-     * the page.
-     */
-    release(): void;
-
-    /**
-     * Trigger the module's function manually.
-     *
-     * Check, if options.test() returns true and show an alert to the user if he/she want
-     * to leave this page. Returns false, if options.test() returns false or the user
-     * cancelled the alert window (~don't leave the page), true otherwise.
-     *
-     * @returns {boolean}
-     */
-    trigger(): boolean;
-}
-
 declare global {
     namespace mw {
         /**
@@ -61,11 +28,46 @@ declare global {
          *     }
          * })
          * ```
-         * @param {Options} [options]
+         * @param {ConfirmCloseWindow.Options} [options]
          * @returns {ConfirmCloseWindow} An object of functions to work with this module
          * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.html#.confirmCloseWindow
          */
-        function confirmCloseWindow(options?: Options): ConfirmCloseWindow;
+        function confirmCloseWindow(options?: ConfirmCloseWindow.Options): ConfirmCloseWindow;
+
+        interface ConfirmCloseWindow {
+            /**
+             * Remove the event listener and don't show an alert anymore, if the user wants to leave
+             * the page.
+             */
+            release(): void;
+
+            /**
+             * Trigger the module's function manually.
+             *
+             * Check, if options.test() returns true and show an alert to the user if he/she want
+             * to leave this page. Returns false, if options.test() returns false or the user
+             * cancelled the alert window (~don't leave the page), true otherwise.
+             *
+             * @returns {boolean}
+             */
+            trigger(): boolean;
+        }
+
+        namespace ConfirmCloseWindow {
+            interface Options {
+                /**
+                 * Optional jQuery event namespace, to allow loosely coupled
+                 * external code to release your trigger. For example, the VisualEditor extension can use this
+                 * remove the trigger registered by mediawiki.action.edit, without strong runtime coupling.
+                 */
+                namespace?: string;
+
+                /**
+                 * @returns {boolean} Whether to show the dialog to the user.
+                 */
+                test?(): boolean;
+            }
+        }
     }
 }
 

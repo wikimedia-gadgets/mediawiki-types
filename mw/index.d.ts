@@ -31,39 +31,7 @@ import "./Upload";
 import "./Uri";
 import "./user";
 import "./util";
-
-interface IdleCallbackOptions {
-    /**
-     * If set, the callback will be scheduled for
-     * immediate execution after this amount of time (in milliseconds) if it didn't run
-     * by that time.
-     */
-    timeout?: number;
-}
-
-type ObjectAnalyticEventData = Record<string, any>;
-type AnalyticEventData = ObjectAnalyticEventData | number | string | undefined;
-
-interface ErrorAnalyticEventData extends ObjectAnalyticEventData {
-    exception?: Error;
-    /**
-     * Name of module which caused the error.
-     */
-    module?: string;
-    /**
-     * Error source.
-     */
-    source: string;
-}
-
-interface AnalyticEvent {
-    data: AnalyticEventData;
-    topic: string;
-}
-
-interface AnalyticEventCallback {
-    (topic: string, data: AnalyticEventData): void;
-}
+import "./utils";
 
 declare global {
     /**
@@ -187,10 +155,10 @@ declare global {
          * was subscribed.
          *
          * @param {string} topic Topic name
-         * @param {AnalyticEventData} [data] Data describing the event.
+         * @param {AnalyticEvent.Data} [data] Data describing the event.
          * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.html#.track
          */
-        function track(topic: string, data?: AnalyticEventData): void;
+        function track(topic: string, data?: AnalyticEvent.Data): void;
 
         /**
          * Track `'resourceloader.exception'` event and send it to the window console.
@@ -200,9 +168,9 @@ declare global {
          * even while `mediawiki.base` and `mw.track` are still in-flight.
          *
          * @private
-         * @param {ErrorAnalyticEventData} data Data describing the event, encoded as an object; see {@link errorLogger.logError}
+         * @param {AnalyticEvent.ErrorData} data Data describing the event, encoded as an object; see {@link errorLogger.logError}
          */
-        function trackError(topic: string, data: ErrorAnalyticEventData): void;
+        function trackError(topic: string, data: AnalyticEvent.ErrorData): void;
 
         /**
          * Register a handler for subset of analytic events, specified by topic.
@@ -223,18 +191,18 @@ declare global {
          * mw.trackSubscribe( 'foo.', console.log );
          * ```
          * @param {string} topic Handle events whose name starts with this string prefix
-         * @param {function(string, AnalyticEventData): void} callback Handler to call for each matching tracked event
+         * @param {AnalyticEvent.Callback} callback Handler to call for each matching tracked event
          * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.html#.trackSubscribe
          */
-        function trackSubscribe(topic: string, callback: AnalyticEventCallback): void;
+        function trackSubscribe(topic: string, callback: AnalyticEvent.Callback): void;
 
         /**
          * Stop handling events for a particular handler.
          *
-         * @param {function(string, AnalyticEventData): void} callback
+         * @param {AnalyticEvent.Callback} callback
          * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.html#.trackUnsubscribe
          */
-        function trackUnsubscribe(callback: AnalyticEventCallback): void;
+        function trackUnsubscribe(callback: AnalyticEvent.Callback): void;
 
         /**
          * List of all analytic events emitted so far.
@@ -244,6 +212,41 @@ declare global {
          * @private
          */
         const trackQueue: AnalyticEvent[];
+
+        interface IdleCallbackOptions {
+            /**
+             * If set, the callback will be scheduled for
+             * immediate execution after this amount of time (in milliseconds) if it didn't run
+             * by that time.
+             */
+            timeout?: number;
+        }
+
+        interface AnalyticEvent {
+            data: AnalyticEvent.Data;
+            topic: string;
+        }
+
+        namespace AnalyticEvent {
+            type ObjectData = Record<string, any>;
+            type Data = ObjectData | number | string | undefined;
+
+            interface ErrorData extends ObjectData {
+                exception?: any;
+                /**
+                 * Name of module which caused the error.
+                 */
+                module?: string;
+                /**
+                 * Error source.
+                 */
+                source: string;
+            }
+
+            interface Callback {
+                (topic: string, data: Data): void;
+            }
+        }
     }
 }
 

@@ -1,5 +1,3 @@
-import { ExtensibleMap } from "./Map";
-
 declare global {
     namespace mw {
         /**
@@ -13,7 +11,7 @@ declare global {
          *
          * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.html#.config
          */
-        const config: ExtensibleMap<{
+        const config: Map.Extensible<{
             /**
              * Since MediaWiki 1.36+, 0 means debug mode is off, and a positive non-zero number means debug mode is on (e.g. 1 or 2).
              *
@@ -361,35 +359,37 @@ declare global {
              */
             wgDiffNewId?: number;
         }>;
+
+        interface PageParseReport {
+            cachereport: PageParseReport.Cache;
+            limitreport: PageParseReport.Limit;
+        }
+
+        namespace PageParseReport {
+            interface Cache {
+                timestamp: `${number}`;
+                transientcontent: boolean;
+                ttl: number;
+            }
+
+            interface Limit {
+                "cputime": `${number}`;
+                "expansiondepth": LimitValue;
+                "expensivefunctioncount": LimitValue;
+                "postexpandincludesize": LimitValue;
+                "ppvisitednodes": LimitValue;
+                "templateargumentsize": LimitValue;
+                "timingprofile": string[];
+                "unstrip-depth": LimitValue;
+                "unstrip-size": LimitValue;
+            }
+
+            interface LimitValue {
+                limit: number;
+                value: number;
+            }
+        }
     }
-}
-
-interface PageParseReport {
-    cachereport: CacheReport;
-    limitreport: LimitReport;
-}
-
-interface CacheReport {
-    timestamp: `${number}`;
-    transientcontent: boolean;
-    ttl: number;
-}
-
-interface LimitReport {
-    "cputime": `${number}`;
-    "expansiondepth": LimitReportValue;
-    "expensivefunctioncount": LimitReportValue;
-    "postexpandincludesize": LimitReportValue;
-    "ppvisitednodes": LimitReportValue;
-    "templateargumentsize": LimitReportValue;
-    "timingprofile": string[];
-    "unstrip-depth": LimitReportValue;
-    "unstrip-size": LimitReportValue;
-}
-
-interface LimitReportValue {
-    limit: number;
-    value: number;
 }
 
 export {};

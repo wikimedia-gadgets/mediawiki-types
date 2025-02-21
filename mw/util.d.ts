@@ -1,39 +1,3 @@
-import { QueryParams } from "./Uri";
-
-type NoReturn<T extends (...args: any[]) => any> = T extends (
-    this: infer U,
-    ...args: infer V
-) => any
-    ? unknown extends U
-        ? (...args: V) => void
-        : (this: U, ...args: V) => void
-    : never;
-
-/**
- * @see https://doc.wikimedia.org/mediawiki-core/master/js/module-mediawiki.util.html#~ResizeableThumbnailUrl
- */
-interface ResizeableThumbnailUrl {
-    /**
-     * File name (same format as {@link mw.Title.getMainText()}).
-     */
-    name: string;
-
-    /**
-     * Thumbnail width, in pixels. Null when the file is not a thumbnail.
-     */
-    width: number | null;
-
-    /**
-     * @param w Width, which must be smaller than the width of the original image (or equal to it; that
-     *  only works if `MediaHandler::mustRender` returns true for the file). Null when the
-     *  file in the original URL is not a thumbnail.
-     *  On wikis with `$wgGenerateThumbnailOnParse` set to true, this will fall back to using
-     *  `Special:Redirect` which is less efficient. Otherwise, it is a direct thumbnail URL.
-     * @returns A thumbnail URL (URL-encoded) with that width.
-     */
-    resizeUrl: ((w: number) => string) | null;
-}
-
 declare global {
     namespace mw {
         /**
@@ -651,6 +615,31 @@ declare global {
              * @see https://doc.wikimedia.org/mediawiki-core/master/js/module-mediawiki.util.html#.wikiUrlencode
              */
             function wikiUrlencode(str: string): string;
+
+            /**
+             * @see https://doc.wikimedia.org/mediawiki-core/master/js/module-mediawiki.util.html#~ResizeableThumbnailUrl
+             */
+            interface ResizeableThumbnailUrl {
+                /**
+                 * File name (same format as {@link mw.Title.getMainText()}).
+                 */
+                name: string;
+
+                /**
+                 * Thumbnail width, in pixels. Null when the file is not a thumbnail.
+                 */
+                width: number | null;
+
+                /**
+                 * @param w Width, which must be smaller than the width of the original image (or equal to it; that
+                 *  only works if `MediaHandler::mustRender` returns true for the file). Null when the
+                 *  file in the original URL is not a thumbnail.
+                 *  On wikis with `$wgGenerateThumbnailOnParse` set to true, this will fall back to using
+                 *  `Special:Redirect` which is less efficient. Otherwise, it is a direct thumbnail URL.
+                 * @returns A thumbnail URL (URL-encoded) with that width.
+                 */
+                resizeUrl: ((w: number) => string) | null;
+            }
         }
     }
 }

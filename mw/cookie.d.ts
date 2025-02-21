@@ -1,5 +1,3 @@
-type SameSite = "none" | "lax" | "strict";
-
 declare global {
     namespace mw {
         /**
@@ -15,6 +13,8 @@ declare global {
          * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.cookie.html
          */
         namespace cookie {
+            type SameSite = "none" | "lax" | "strict";
+
             /**
              * Get the value of a cookie.
              *
@@ -59,14 +59,14 @@ declare global {
              *
              * @param {string} key
              * @param {string|null} value Value of cookie. If `value` is `null` then this method will instead remove a cookie by name of `key`
-             * @param {CookieOptions|Date|number} [options] Options object, or expiry date
+             * @param {Options|Date|number} [options] Options object, or expiry date
              * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.cookie.html#.set
              */
             // see https://stackoverflow.com/a/64932909 for <SS>
             function set<SS extends string = SameSite>(
                 key: string,
                 value: string | null,
-                options?: CookieOptions<SS> | Date | number
+                options?: Options<SS> | Date | number
             ): void;
 
             /**
@@ -74,7 +74,7 @@ declare global {
              *
              * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.cookie.html#.CookieOptions
              */
-            interface CookieOptions<SS extends string = SameSite> {
+            interface Options<SS extends string = SameSite> {
                 /**
                  * Custom scope for cookie key. The domain attribute of the cookie.
                  * Defaults to wgCookieDomain.

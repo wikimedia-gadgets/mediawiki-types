@@ -13,16 +13,16 @@ declare global {
          * function, if none, pass empty string.
          * @param {string} newVal New value that may have to be trimmed down.
          * @param {number} byteLimit Number of bytes the value may be in size.
-         * @param {FilterFunction} [filterFunction] Function to call on the string before assessing the length.
-         * @returns {TrimResult}
+         * @param {JQuery.LengthLimit.FilterFunction} [filterFunction] Function to call on the string before assessing the length.
+         * @returns {JQuery.LengthLimit.TrimResult}
          * @see https://doc.wikimedia.org/mediawiki-core/master/js/module-jquery.lengthLimit.html#.'$.fn.trimByteLength'
          */
         trimByteLength(
             safeVal: string,
             newVal: string,
             byteLimit: number,
-            filterFunction?: FilterFunction
-        ): TrimResult;
+            filterFunction?: JQuery.LengthLimit.FilterFunction
+        ): JQuery.LengthLimit.TrimResult;
     }
 
     interface JQuery {
@@ -38,12 +38,12 @@ declare global {
          *
          * @param {number} [limit] Limit to enforce, fallsback to maxLength-attribute,
          *  called with fetched value as argument.
-         * @param {FilterFunction} [filterFunction] Function to call on the string before assessing the length.
+         * @param {JQuery.LengthLimit.FilterFunction} [filterFunction] Function to call on the string before assessing the length.
          * @returns {JQuery}
          * @see https://doc.wikimedia.org/mediawiki-core/master/js/module-jquery.lengthLimit.html#.$.fn.byteLimit
          */
-        byteLimit(limit: number, filterFunction?: FilterFunction): this;
-        byteLimit(filterFunction?: FilterFunction): this;
+        byteLimit(limit: number, filterFunction?: JQuery.LengthLimit.FilterFunction): this;
+        byteLimit(filterFunction?: JQuery.LengthLimit.FilterFunction): this;
 
         /**
          * Enforces a codepoint (character) limit on an input field.
@@ -60,22 +60,24 @@ declare global {
          *
          * @param {number} [limit] Limit to enforce, fallsback to maxLength-attribute,
          *  called with fetched value as argument.
-         * @param {FilterFunction} [filterFunction] Function to call on the string before assessing the length.
+         * @param {JQuery.LengthLimit.FilterFunction} [filterFunction] Function to call on the string before assessing the length.
          * @returns {JQuery}
          * @see https://doc.wikimedia.org/mediawiki-core/master/js/module-jquery.lengthLimit.html#.$.fn.codePointLimit
          */
-        codePointLimit(limit: number, filterFunction?: FilterFunction): this;
-        codePointLimit(filterFunction?: FilterFunction): this;
+        codePointLimit(limit: number, filterFunction?: JQuery.LengthLimit.FilterFunction): this;
+        codePointLimit(filterFunction?: JQuery.LengthLimit.FilterFunction): this;
     }
-}
 
-interface FilterFunction {
-    (str: string): string;
-}
+    namespace JQuery.LengthLimit {
+        interface FilterFunction {
+            (str: string): string;
+        }
 
-interface TrimResult {
-    newVal: string;
-    trimmed: boolean;
+        interface TrimResult {
+            newVal: string;
+            trimmed: boolean;
+        }
+    }
 }
 
 export {};

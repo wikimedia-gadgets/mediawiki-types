@@ -24,101 +24,99 @@ declare global {
          * ```
          * @see https://doc.wikimedia.org/mediawiki-core/master/js/module-jquery.confirmable.html#.$.fn.confirmable
          */
-        confirmable: Confirmable;
+        confirmable: JQuery.Confirmable;
     }
-}
 
-// make all properties required, replacing optional values with undefined,
-// whether "exactOptionalPropertyTypes" is enabled or not.
-type RequiredOrUndefined<T> = {
-    [P in keyof Required<T>]: T[P];
-};
+    namespace JQuery {
+        interface Confirmable {
+            /**
+             * @param {Confirmable.Options} [options]
+             */
+            (options?: Confirmable.Options): this;
 
-interface Confirmable {
-    /**
-     * @param {Options} [options]
-     */
-    (options?: Options): this;
+            /**
+             * Default options. Overridable primarily for internationalisation handling.
+             */
+            defaultOptions: Confirmable.RequiredOptions;
 
-    /**
-     * Default options. Overridable primarily for internationalisation handling.
-     */
-    defaultOptions: RequiredOptions;
+            handler(event: Event, options: Confirmable.RequiredOptions): void;
+        }
 
-    handler(event: JQuery.Event, options: RequiredOptions): void;
-}
+        namespace Confirmable {
+            type RequiredOptions = Required<Options> & { i18n: mw.RequiredOrUndefined<I18N> };
 
-type RequiredOptions = Required<Options> & { i18n: RequiredOrUndefined<I18N> };
+            interface Options {
+                /**
+                 * Optional selector used for jQuery event delegation.
+                 */
+                delegate?: string | null;
 
-interface Options {
-    /**
-     * Optional selector used for jQuery event delegation.
-     */
-    delegate?: string | null;
+                /**
+                 * Events to hook to.
+                 */
+                events?: string;
 
-    /**
-     * Events to hook to.
-     */
-    events?: string;
+                /**
+                 * Text to use for interface elements.
+                 */
+                i18n?: I18N;
 
-    /**
-     * Text to use for interface elements.
-     */
-    i18n?: I18N;
+                /**
+                 * Callback to fire when preparing confirmable buttons. It is fired separately for the 'Yes' and 'No' button.
+                 * Receives the button jQuery object as the first parameter and 'yes' or 'no' as the second.
+                 */
+                buttonCallback?($button: JQuery): JQuery;
 
-    /**
-     * Callback to fire when preparing confirmable buttons. It is fired separately for the 'Yes' and 'No' button.
-     * Receives the button jQuery object as the first parameter and 'yes' or 'no' as the second.
-     */
-    buttonCallback?($button: JQuery): JQuery;
+                /**
+                 * Callback to fire when the action is confirmed (user clicks the 'Yes' button).
+                 */
+                handler?: ((event: Event) => void) | null;
 
-    /**
-     * Callback to fire when the action is confirmed (user clicks the 'Yes' button).
-     */
-    handler?: ((event: JQuery.Event) => void) | null;
+                /**
+                 * Callback to fire when preparing confirmable interface.
+                 * Receives the interface jQuery object as the only parameter.
+                 */
+                wrapperCallback?($interface: JQuery): JQuery;
+            }
 
-    /**
-     * Callback to fire when preparing confirmable interface.
-     * Receives the interface jQuery object as the only parameter.
-     */
-    wrapperCallback?($interface: JQuery): JQuery;
-}
+            // tslint:disable-next-line:interface-name
+            interface I18N {
+                /**
+                 * Text to use for the confirmation question.
+                 * Defaults to `Are you sure?`.
+                 */
+                confirm: string;
 
-// tslint:disable-next-line:interface-name
-interface I18N {
-    /**
-     * Text to use for the confirmation question.
-     * Defaults to `Are you sure?`.
-     */
-    confirm: string;
+                /**
+                 * Text to use for the 'No' button.
+                 * Defaults to `No`.
+                 */
+                no: string;
 
-    /**
-     * Text to use for the 'No' button.
-     * Defaults to `No`.
-     */
-    no: string;
+                /**
+                 * Optional title text to use for the 'No' button.
+                 */
+                noTitle?: string;
 
-    /**
-     * Optional title text to use for the 'No' button.
-     */
-    noTitle?: string;
+                /**
+                 * Word separator to place between the three text messages.
+                 * Defaults to ` `.
+                 */
+                space: string;
 
-    /**
-     * Word separator to place between the three text messages.
-     * Defaults to ` `.
-     */
-    space: string;
+                /**
+                 * Text to use for the 'Yes' button.
+                 * Defaults to `Yes`.
+                 */
+                yes: string;
 
-    /**
-     * Text to use for the 'Yes' button.
-     * Defaults to `Yes`.
-     */
-    yes: string;
-
-    /**
-     * Optional title text to use for the 'Yes' button.
-     */
-    yesTitle?: string;
+                /**
+                 * Optional title text to use for the 'Yes' button.
+                 */
+                yesTitle?: string;
+            }
+        }
+    }
 }
 
 export {};

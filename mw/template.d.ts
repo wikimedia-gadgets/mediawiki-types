@@ -1,32 +1,3 @@
-/**
- * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.template.html#~TemplateRenderer
- */
-interface TemplateRenderer {
-    /**
-     * Compiles a template for rendering.
-     *
-     * @param {Object} [data] for the template
-     * @param {Object} [partials] additional partial templates
-     * @returns {JQuery}
-     * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.template.html#~TemplateCompileFunction
-     */
-    render(data?: unknown, partials?: unknown): JQuery;
-}
-
-/**
- * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.template.html#~TemplateCompiler
- */
-interface TemplateCompiler {
-    /**
-     * Compiles a template for rendering.
-     *
-     * @param {string} src source of the template
-     * @returns {TemplateRenderer} for rendering
-     * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.template.html#~TemplateCompileFunction
-     */
-    compile(src: string): TemplateRenderer;
-}
-
 declare global {
     namespace mw {
         /**
@@ -61,45 +32,41 @@ declare global {
              * @param {string} moduleName Name of the ResourceLoader module the template is associated with
              * @param {string} templateName Name of the template (including suffix)
              * @param {string} templateBody Contents of the template (e.g. html markup)
-             * @returns {TemplateRenderer} Compiled template
+             * @returns {Renderer} Compiled template
              * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.template.html#.add
              */
-            function add(
-                moduleName: string,
-                templateName: string,
-                templateBody: string
-            ): TemplateRenderer;
+            function add(moduleName: string, templateName: string, templateBody: string): Renderer;
 
             /**
              * Compile a string of template markup with an engine of choice.
              *
              * @param {string} templateBody Template body
              * @param {string} compilerName The name of a registered compiler.
-             * @returns {TemplateRenderer} Compiled template
+             * @returns {Renderer} Compiled template
              * @throws {Error} when unknown compiler name provided.
              * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.template.html#.compile
              */
-            function compile(templateBody: string, compilerName: string): TemplateRenderer;
+            function compile(templateBody: string, compilerName: string): Renderer;
 
             /**
              * Get a compiled template by module and template name.
              *
              * @param {string} moduleName Name of the module to retrieve the template from
              * @param {string} templateName Name of template to be retrieved
-             * @returns {TemplateRenderer} Compiled template
+             * @returns {Renderer} Compiled template
              * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.template.html#.get
              */
-            function get(moduleName: string, templateName: string): TemplateRenderer;
+            function get(moduleName: string, templateName: string): Renderer;
 
             /**
              * Get a compiler via its name.
              *
              * @param {string} name Name of a compiler
-             * @returns {TemplateCompiler} The compiler
+             * @returns {Compiler} The compiler
              * @throws {Error} when unknown compiler provided
              * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.template.html#.getCompiler
              */
-            function getCompiler(name: string): TemplateCompiler;
+            function getCompiler(name: string): Compiler;
 
             /**
              * Get the name of the associated compiler based on a template name.
@@ -114,15 +81,44 @@ declare global {
              * Register a new compiler.
              *
              * A compiler is any object that implements a {@link mw.template.compile} method. The compile() method must
-             * return a Template interface with a method {@link TemplateRenderer.render render()} that returns HTML.
+             * return a Template interface with a method {@link Renderer.render render()} that returns HTML.
              *
              * The compiler name must correspond with the name suffix of templates that use this compiler.
              *
              * @param {string} name Compiler name
-             * @param {TemplateCompiler} compiler
+             * @param {Compiler} compiler
              * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.template.html#.registerCompiler
              */
-            function registerCompiler(name: string, compiler: TemplateCompiler): void;
+            function registerCompiler(name: string, compiler: Compiler): void;
+
+            /**
+             * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.template.html#~TemplateRenderer
+             */
+            interface Renderer {
+                /**
+                 * Compiles a template for rendering.
+                 *
+                 * @param {Object} [data] for the template
+                 * @param {Object} [partials] additional partial templates
+                 * @returns {JQuery}
+                 * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.template.html#~TemplateCompileFunction
+                 */
+                render(data?: unknown, partials?: unknown): JQuery;
+            }
+
+            /**
+             * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.template.html#~TemplateCompiler
+             */
+            interface Compiler {
+                /**
+                 * Compiles a template for rendering.
+                 *
+                 * @param {string} src source of the template
+                 * @returns {Renderer} for rendering
+                 * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.template.html#~TemplateCompileFunction
+                 */
+                compile(src: string): Renderer;
+            }
         }
     }
 }

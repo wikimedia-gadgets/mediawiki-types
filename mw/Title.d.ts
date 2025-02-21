@@ -1,46 +1,3 @@
-import { QueryParams } from "./Uri";
-
-export type TitleLike = string | mw.Title;
-
-/**
- * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.Title.html#~TitleExistenceStore
- */
-interface TitleExistenceStore {
-    /**
-     * Keyed by title. Boolean true value indicates page does exist.
-     */
-    pages: { [title: string]: boolean };
-
-    /**
-     * The setter function. Returns a boolean.
-     *
-     * @example
-     * ```js
-     * // To declare existing titles
-     * Title.exist.set( ['User:John_Doe', ...] );
-     * ```
-     * @example
-     * ```js
-     * // To declare titles nonexistent
-     * Title.exist.set( ['File:Foo_bar.jpg', ...], false );
-     * ```
-     * @param {string|string[]} titles Title(s) in strict prefixedDb title form
-     * @param {boolean} [state=true] State of the given titles
-     * @returns {boolean}
-     */
-    set(titles: string | string[], state?: boolean): boolean;
-}
-
-interface UserInputOptions {
-    /**
-     * Makes sure that a file is uploadable under the title returned.
-     * There are pages in the file namespace under which file upload is impossible.
-     * Automatically assumed if the title is created in the Media namespace.
-     * Defaults to true.
-     */
-    forUploading?: boolean;
-}
-
 declare global {
     namespace mw {
         /**
@@ -82,7 +39,7 @@ declare global {
              *
              * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.Title.html#.exist
              */
-            static exist: TitleExistenceStore;
+            static exist: Title.ExistenceStore;
 
             /**
              * Parse titles into an object structure. Note that when using the constructor
@@ -319,7 +276,7 @@ declare global {
              * @throws {Error} If title is not a string or mw.Title
              * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.Title.html#.exists
              */
-            static exists(title: TitleLike): boolean | null;
+            static exists(title: Title.Like): boolean | null;
 
             /**
              * Check if a given namespace is a talk namespace.
@@ -394,14 +351,14 @@ declare global {
              * @param {string} title
              * @param {number} [defaultNamespace=NS_MAIN]
              *  If given, will used as default namespace for the given title.
-             * @param {UserInputOptions} [options] additional options
+             * @param {Title.UserInputOptions} [options] additional options
              * @returns {Title|null} A valid Title object or null if the input cannot be turned into a valid title
              * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.Title.html#.newFromUserInput
              */
             static newFromUserInput(
                 title: string,
                 defaultNamespace?: number,
-                options?: UserInputOptions
+                options?: Title.UserInputOptions
             ): Title | null;
 
             /**
@@ -435,7 +392,53 @@ declare global {
              */
             static wantSignatureNamespace(namespaceId: number): boolean;
         }
+
+        namespace Title {
+            type Like = string | Title;
+
+            /**
+             * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.Title.html#~TitleExistenceStore
+             */
+            interface ExistenceStore {
+                /**
+                 * Keyed by title. Boolean true value indicates page does exist.
+                 */
+                pages: { [title: string]: boolean };
+
+                /**
+                 * The setter function. Returns a boolean.
+                 *
+                 * @example
+                 * ```js
+                 * // To declare existing titles
+                 * Title.exist.set( ['User:John_Doe', ...] );
+                 * ```
+                 * @example
+                 * ```js
+                 * // To declare titles nonexistent
+                 * Title.exist.set( ['File:Foo_bar.jpg', ...], false );
+                 * ```
+                 * @param {string|string[]} titles Title(s) in strict prefixedDb title form
+                 * @param {boolean} [state=true] State of the given titles
+                 * @returns {boolean}
+                 */
+                set(titles: string | string[], state?: boolean): boolean;
+            }
+
+            interface UserInputOptions {
+                /**
+                 * Makes sure that a file is uploadable under the title returned.
+                 * There are pages in the file namespace under which file upload is impossible.
+                 * Automatically assumed if the title is created in the Media namespace.
+                 * Defaults to true.
+                 */
+                forUploading?: boolean;
+            }
+        }
     }
 }
+
+/** @deprecated Use {@link mw.Title.Like} instead */
+export type TitleLike = mw.Title.Like;
 
 export {};

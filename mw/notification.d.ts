@@ -1,73 +1,18 @@
-/**
- * Describes a notification. See {@link mw.notification mw.notification module}. A Notification object for 1 message.
- *
- * The constructor is not publicly accessible; use {@link mw.notification.notify} instead.
- * This does not insert anything into the document. To add to document use
- * {@link mw.notification.notify}.
- *
- * @see https://doc.wikimedia.org/mediawiki-core/master/js/Notification.html
- */
-interface Notification {
-    $notification: JQuery;
-    autoHideSeconds: number;
-    isOpen: boolean;
-    isPaused: boolean;
-    options: mw.notification.NotificationOptions;
-    timeout: {
-        clear: typeof clearTimeout;
-        set: typeof setTimeout;
-    };
-
-    /**
-     * Close the notification.
-     *
-     * @see https://doc.wikimedia.org/mediawiki-core/master/js/Notification.html#close
-     */
-    close(): void;
-
-    /**
-     * Pause any running auto-hide timer for this notification.
-     *
-     * @see https://doc.wikimedia.org/mediawiki-core/master/js/Notification.html#pause
-     */
-    pause(): void;
-
-    /**
-     * Start autoHide timer if not already started.
-     * Does nothing if autoHide is disabled.
-     * Either to resume from pause or to make the first start.
-     *
-     * @see https://doc.wikimedia.org/mediawiki-core/master/js/Notification.html#pause
-     */
-    resume(): void;
-
-    /**
-     * Start the notification. Called automatically by {@link mw.notification.notify}
-     * (possibly asynchronously on document-ready).
-     *
-     * This inserts the notification into the page, closes any matching tagged notifications,
-     * handles the fadeIn animations and replacement transitions, and starts autoHide timers.
-     *
-     * @private
-     */
-    start(): void;
-}
-
 declare global {
     namespace mw {
         /**
          * Convenience method for loading and accessing the {@link mw.notification.notify mw.notification module}.
          *
          * @param {HTMLElement|HTMLElement[]|JQuery|Message|string} message
-         * @param {notification.NotificationOptions} [options] The options to use for the notification.
+         * @param {notification.Options} [options] The options to use for the notification.
          *  See {@link notification.defaults the defaults}.
-         * @returns {JQuery.Promise<Notification>} Notification object
+         * @returns {JQuery.Promise<notification.Notification>} Notification object
          * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.html#.notify
          */
         function notify(
             message: string | Message | JQuery | HTMLElement | HTMLElement[],
-            options?: notification.NotificationOptions
-        ): JQuery.Promise<Notification>;
+            options?: notification.Options
+        ): JQuery.Promise<notification.Notification>;
 
         /**
          * Library for sending notifications to end users.
@@ -108,20 +53,20 @@ declare global {
              *
              * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.notification.html#.defaults
              */
-            const defaults: Required<NotificationOptions>;
+            const defaults: Required<Options>;
 
             /**
              * Display a notification message to the user.
              *
              * @param {HTMLElement|HTMLElement[]|JQuery|Message|string} message
-             * @param {NotificationOptions} [options] The options to use for the notification.
+             * @param {Options} [options] The options to use for the notification.
              *  Options not specified default to the values in {@link defaults}.
              * @returns {Notification} Notification object
              * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.notification.html#.notify
              */
             function notify(
                 message: string | Message | JQuery | HTMLElement | HTMLElement[],
-                options?: NotificationOptions
+                options?: Options
             ): Notification;
 
             /**
@@ -141,9 +86,65 @@ declare global {
             function resume(): void;
 
             /**
+             * Describes a notification. See {@link mw.notification mw.notification module}. A Notification object for 1 message.
+             *
+             * The constructor is not publicly accessible; use {@link mw.notification.notify} instead.
+             * This does not insert anything into the document. To add to document use
+             * {@link mw.notification.notify}.
+             *
+             * @see https://doc.wikimedia.org/mediawiki-core/master/js/Notification.html
+             */
+            interface Notification {
+                $notification: JQuery;
+                autoHideSeconds: number;
+                isOpen: boolean;
+                isPaused: boolean;
+                options: Options;
+                timeout: {
+                    clear: typeof clearTimeout;
+                    set: typeof setTimeout;
+                };
+
+                /**
+                 * Close the notification.
+                 *
+                 * @see https://doc.wikimedia.org/mediawiki-core/master/js/#!/api/mw.Notification_-method-close
+                 */
+                close(): void;
+
+                /**
+                 * Pause any running auto-hide timer for this notification
+                 *
+                 * @see https://doc.wikimedia.org/mediawiki-core/master/js/#!/api/mw.Notification_-method-pause
+                 */
+                pause(): void;
+
+                /**
+                 * Start autoHide timer if not already started.
+                 * Does nothing if autoHide is disabled.
+                 * Either to resume from pause or to make the first start.
+                 *
+                 * @see https://doc.wikimedia.org/mediawiki-core/master/js/#!/api/mw.Notification_-method-resume
+                 */
+                resume(): void;
+
+                /**
+                 * Start the notification. Called automatically by {@link mw.notification.notify}
+                 * (possibly asynchronously on document-ready).
+                 *
+                 * This inserts the notification into the page, closes any matching tagged notifications,
+                 * handles the fadeIn animations and replacement transitions, and starts autoHide timers.
+                 *
+                 * @private
+                 * @see https://doc.wikimedia.org/mediawiki-core/master/js/#!/api/mw.Notification_-method-start
+                 */
+                start(): void;
+            }
+
+            /**
              * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.notification.html#.NotificationOptions
              */
-            interface NotificationOptions {
+            interface Options {
                 /**
                  * Whether the notification should automatically
                  * be hidden after shown. Or if it should persist.
@@ -151,7 +152,7 @@ declare global {
                 autoHide?: boolean;
 
                 /**
-                 * Key to {@link autoHideSeconds} for number of seconds for timeout of auto-hide
+                 * Key to {@link mw.notification.autoHideSeconds} for number of seconds for timeout of auto-hide
                  * notifications.
                  */
                 autoHideSeconds?: "long" | "short";

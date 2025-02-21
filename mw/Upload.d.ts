@@ -1,5 +1,3 @@
-import { ApiResponse, FinishUpload } from "./Api";
-
 declare global {
     namespace mw {
         /**
@@ -62,12 +60,12 @@ declare global {
             /**
              * Finish a stash upload.
              *
-             * @returns {Api.Promise<[ApiResponse], Api.RejectArgTuple | [string, ApiResponse]>}
+             * @returns {Api.Promise<[Api.UnknownResponse], Api.RejectArgTuple | [string, Api.UnknownResponse]>}
              * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.Upload.html#finishStashUpload
              */
             finishStashUpload(): Api.Promise<
-                [ApiResponse],
-                Api.RejectArgTuple | [string, ApiResponse]
+                [Api.UnknownResponse],
+                Api.RejectArgTuple | [string, Api.UnknownResponse]
             >;
 
             /**
@@ -116,10 +114,10 @@ declare global {
              * Only available once the upload is finished! Don't try to get it
              * beforehand.
              *
-             * @returns {ApiResponse|undefined}
+             * @returns {Api.UnknownResponse|undefined}
              * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.Upload.html#getImageInfo
              */
-            getImageInfo(): ApiResponse | undefined;
+            getImageInfo(): Api.UnknownResponse | undefined;
 
             /**
              * Gets the state of the upload.
@@ -228,10 +226,10 @@ declare global {
             /**
              * Upload the file to the stash to be completed later.
              *
-             * @returns {Upload.Promise<[FinishUpload]>}
+             * @returns {Upload.Promise<[Api.FinishUpload]>}
              * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.Upload.html#uploadToStash
              */
-            uploadToStash(): Upload.Promise<[FinishUpload]>;
+            uploadToStash(): Upload.Promise<[Api.FinishUpload]>;
         }
 
         namespace Upload {

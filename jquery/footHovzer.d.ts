@@ -10,22 +10,24 @@ declare global {
          * hovzer.update();
          * ```
          * @private
-         * @returns {FootHovzer}
+         * @returns {JQuery.FootHovzer}
          */
-        getFootHovzer(): FootHovzer;
+        getFootHovzer(): JQuery.FootHovzer;
     }
-}
 
-interface FootHovzer {
-    /**
-     * The stack container.
-     */
-    $: JQuery;
+    namespace JQuery {
+        interface FootHovzer {
+            /**
+             * The stack container.
+             */
+            $: JQuery;
 
-    /**
-     * Update dimensions of stack to account for changes in the subtree.
-     */
-    update(): void;
+            /**
+             * Update dimensions of stack to account for changes in the subtree.
+             */
+            update(): void;
+        }
+    }
 }
 
 export {};

@@ -1,10 +1,3 @@
-export type QueryParams = Record<string, string | number | boolean | null | undefined>;
-
-interface UriParser {
-    loose: RegExp;
-    strict: RegExp;
-}
-
 declare global {
     namespace mw {
         /**
@@ -132,7 +125,7 @@ declare global {
              * file where they make use of named capture groups. That syntax isn't valid in JavaScript ES5,
              * so the server-side strips these before delivering to the client.
              */
-            private static parser: UriParser;
+            private static parser: Uri.Parser;
 
             /**
              * The order here matches the order of captured matches in the `parser` property regexes.
@@ -157,14 +150,14 @@ declare global {
              *  properties. If omitted (or set to `undefined`, `null` or empty string), then an object
              *  will be created for the default `uri` of this constructor (`location.href` for mw.Uri,
              *  other values for other instances -- see {@link mw.UriRelative} for details).
-             * @param {Uri.UriOptions|boolean} [options] Object with options, or (backwards compatibility) a boolean
+             * @param {Uri.Options|boolean} [options] Object with options, or (backwards compatibility) a boolean
              *  for strictMode
              * @throws {Error} when the query string or fragment contains an unknown % sequence
              * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.Uri.html#Uri
              */
             constructor(
                 uri?: string | Uri | Partial<Record<typeof Uri.properties[number], string>>,
-                options?: Uri.UriOptions | boolean
+                options?: Uri.Options | boolean
             );
 
             /**
@@ -249,10 +242,10 @@ declare global {
              * Parse a string and set our properties accordingly.
              *
              * @param {string} str URI, see constructor.
-             * @param {Uri.UriOptions} options See constructor.
+             * @param {Uri.Options} options See constructor.
              * @throws {Error} when the query string or fragment contains an unknown % sequence
              */
-            private parse(str: string, options: Uri.UriOptions): void;
+            private parse(str: string, options: Uri.Options): void;
 
             /**
              * Decode a url encoded value.
@@ -285,7 +278,7 @@ declare global {
             /**
              * @see https://doc.wikimedia.org/mediawiki-core/master/js/mw.Uri.html#.UriOptions
              */
-            interface UriOptions {
+            interface Options {
                 /**
                  * Whether to parse array query parameters (e.g. `&foo[0]=a&foo[1]=b` or `&foo[]=a&foo[]=b`) or leave them alone.
                  * Currently this does not handle associative or multi-dimensional arrays, but that may be improved in the future.
@@ -304,8 +297,16 @@ declare global {
                  */
                 strictMode?: boolean;
             }
+
+            interface Parser {
+                loose: RegExp;
+                strict: RegExp;
+            }
         }
     }
 }
+
+/** @deprecated Use {@link mw.QueryParams} instead */
+export type QueryParams = mw.QueryParams;
 
 export {};
